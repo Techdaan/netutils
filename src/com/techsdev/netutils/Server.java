@@ -12,7 +12,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 /**
  * Created by Development on 9/7/2016.
  *
- * A class that represents a server.
+ * A class that represents a server. People using the API are recommended to extend this class.
  */
 public abstract class Server {
     /**

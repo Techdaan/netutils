@@ -1,6 +1,8 @@
 package com.techsdev.netutils;
 
+import com.techsdev.netutils.session.Session;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -33,7 +35,7 @@ public abstract class Server {
     public Server() {
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
-                .childHandler(new NetutilsChannelInitializer())
+                .childHandler(new NetutilsChannelInitializer(this))
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
     }
@@ -55,6 +57,13 @@ public abstract class Server {
             }
         });
     }
+
+    /**
+     * Creates a new {@link Session} for a {@link Channel}
+     * @param channel The channel to create the session for
+     * @return The session created for this channel
+     */
+    public abstract Session createSession(Channel channel);
 
     /**
      * Called when we successfully bound the server to the specified port

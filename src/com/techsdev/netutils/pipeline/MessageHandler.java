@@ -18,7 +18,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
     /**
      * The session that's linked to this message handler
      */
-    private AtomicReference<Session> session;
+    private AtomicReference<Session> session = new AtomicReference<>(null);
 
     /**
      * The session's server

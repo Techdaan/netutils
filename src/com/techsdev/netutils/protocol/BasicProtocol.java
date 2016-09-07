@@ -2,7 +2,9 @@ package com.techsdev.netutils.protocol;
 
 import com.techsdev.netutils.util.*;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
+import java.nio.Buffer;
 import java.util.Optional;
 
 /**
@@ -51,15 +53,13 @@ public class BasicProtocol extends Protocol {
 
     @Override
     public ByteBuf writeHeader(ByteBuf buf, Message msg, int opcode, ByteBuf body) {
-        Optional<CodecRegistry.CodecInformation> infoOptional = incoming.getCodec(msg.getClass());
+        Optional<CodecRegistry.CodecInformation> infoOptional = outgoing.getCodec(msg.getClass());
 
-        BufferUtils.writeVarInt(buf, body.readableBytes());
-
-        if(infoOptional.isPresent()) {
-            BufferUtils.writeVarInt(buf, infoOptional.get().getOpcode());
-        } else {
-            BufferUtils.writeVarInt(buf, 0x00);
-        }
+        ByteBuf opcodebuf = Unpooled.buffer();
+        BufferUtils.writeVarInt(opcodebuf, opcode);
+        BufferUtils.writeVarInt(buf, body.readableBytes() + opcodebuf.readableBytes());
+        BufferUtils.writeVarInt(buf, opcode);
+        opcodebuf.release();
 
         return buf;
     }
@@ -91,8 +91,8 @@ public class BasicProtocol extends Protocol {
     }
 
     @Override
-    public  Codec getCodecOutgoing(Message message) throws NullPointerException {
-        Optional<CodecRegistry.CodecInformation> codec = incoming.getCodec(message.getClass());
+    public Codec getCodecOutgoing(Message message) throws NullPointerException {
+        Optional<CodecRegistry.CodecInformation> codec = outgoing.getCodec(message.getClass());
         if(codec.isPresent()) {
             return codec.get().getCodec();
         } else {
@@ -112,7 +112,7 @@ public class BasicProtocol extends Protocol {
 
     @Override
     public int getOpcode(Message message) {
-        Optional<CodecRegistry.CodecInformation> codec = incoming.getCodec(message.getClass());
+        Optional<CodecRegistry.CodecInformation> codec = outgoing.getCodec(message.getClass());
         if(codec.isPresent()) {
             return codec.get().getOpcode();
         } else {

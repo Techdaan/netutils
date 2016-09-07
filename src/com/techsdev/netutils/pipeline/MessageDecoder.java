@@ -41,7 +41,13 @@ public class MessageDecoder extends ByteToMessageDecoder {
         }
 
         ByteBuf buf = inbuf.readBytes(length);
-        Codec codec = handler.getSession().getProtocol().readHeader(buf);
+        //Codec codec = handler.getSession().getProtocol().readHeader(buf);
+
+
+        Session sess = handler.getSession();
+        Protocol protocol = sess.getProtocol();
+        Codec codec = protocol.readHeader(buf);
+
         Message msg = codec.decode(buf);
         out.add(msg);
     }

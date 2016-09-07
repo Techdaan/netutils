@@ -2,6 +2,7 @@ package com.techsdev.netutils.session;
 
 import com.techsdev.netutils.protocol.Protocol;
 import com.techsdev.netutils.util.Message;
+import io.netty.channel.Channel;
 
 /**
  * Created by Development on 9/7/2016.
@@ -9,6 +10,12 @@ import com.techsdev.netutils.util.Message;
  * A class to representate a connection
  */
 public interface Session {
+
+    /**
+     * Retrieves the channel this session is active on
+     * @return The @{link Channel}
+     */
+    Channel getChannel();
 
     /**
      * Retrieves the protocol that the session's currently using

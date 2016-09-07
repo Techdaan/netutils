@@ -2,6 +2,8 @@ package com.techsdev.netutils.util;
 
 import io.netty.buffer.ByteBuf;
 
+import java.io.IOException;
+
 /**
  * Created by Development on 9/7/2016.
  *
@@ -14,7 +16,7 @@ public interface Codec<T extends Message> {
      * @param buf The buffer to translate
      * @return The message
      */
-    T decode(ByteBuf buf);
+    T decode(ByteBuf buf) throws IOException;
 
     /**
      * Encodes the supplied {@link Message} into the supplied {@link ByteBuf}
@@ -22,6 +24,6 @@ public interface Codec<T extends Message> {
      * @param msg The message to write to the buffer
      * @return The buffer the data is written to
      */
-    ByteBuf encode(ByteBuf buf, T msg);
+    ByteBuf encode(ByteBuf buf, T msg) throws IOException;
 
 }
